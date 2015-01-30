@@ -157,7 +157,7 @@ public class ParsePlugin extends CordovaPlugin {
     private String getCurrentDateTime() {
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.US);
 	sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-	return sdf.format(new Date(0));
+	return sdf.format(new Date());
     }
 
 }
