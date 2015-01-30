@@ -169,13 +169,13 @@ public class ParsePlugin extends CordovaPlugin {
     private void countOfflineEventDetails(final CallbackContext callbackContext) {
 	cordova.getThreadPool().execute(new Runnable() {
             public void run() {
-        	ParseQuery<ParseObject> query = ParseQuery.get("OfflineEventRegistration")
-        		    .fromLocalDatastore()
-        		    .findInBackground(new FindCallback() {
-        		        public void done(List<ParseObject> objects, ParseException e) {
-        		            callbackContext.success(objects.size());
-        		        }
-        		    });
+//        	ParseQuery<ParseObject> query = ParseQuery.get("OfflineEventRegistration")
+//        		    .fromLocalDatastore()
+//        		    .findInBackground(new FindCallback() {
+//        		        public void done(List<ParseObject> objects, ParseException e) {
+//        		            callbackContext.success(objects.size());
+//        		        }
+//        		    });
             }
 	});
     }
