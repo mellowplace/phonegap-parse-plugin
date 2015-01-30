@@ -141,10 +141,17 @@ public class ParsePlugin extends CordovaPlugin {
         	oEvent.put("lastName", lastName);
         	oEvent.put("email", email);
         	oEvent.put("phoneNumber", phoneNumber);
+        	oEvent.put("registeredAt", getCurrentDateTime());
         	oEvent.saveEventually();
         	callbackContext.success();
             }
 	});
+    }
+    
+    private String getCurrentDateTime() {
+	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.US);
+	sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+	return sdf.format(new Date(0));
     }
 
 }
