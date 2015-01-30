@@ -14,12 +14,15 @@ import com.parse.PushService;
 import com.parse.ParseQuery;
 import com.parse.ParseException;
 import com.parse.FindCallback;
+import com.parse.SaveCallback;
 
 import java.util.TimeZone;
 import java.util.Date;
 import java.util.Locale;
 import java.util.List;
 import java.text.SimpleDateFormat;
+
+import android.content.Context;
 
 
 public class ParsePlugin extends CordovaPlugin {
@@ -79,11 +82,13 @@ public class ParsePlugin extends CordovaPlugin {
     }
 
     private void initialize(final CallbackContext callbackContext, final JSONArray args) {
+	final Context context = cordova.getActivity().getApplicationContext();
         cordova.getThreadPool().execute(new Runnable() {
             public void run() {
                 try {
                     String appId = args.getString(0);
                     String clientKey = args.getString(1);
+                    Parse.enableLocalDatastore(context);
                     Parse.initialize(cordova.getActivity(), appId, clientKey);
                     PushService.setDefaultPushCallback(cordova.getActivity(), cordova.getActivity().getClass());
                     ParseInstallation.getCurrentInstallation().saveInBackground();
@@ -151,7 +156,7 @@ public class ParsePlugin extends CordovaPlugin {
     		final CallbackContext callbackContext) {
 	cordova.getThreadPool().execute(new Runnable() {
             public void run() {
-        	ParseObject oEvent = new ParseObject("OfflineEventRegistration");
+        	final ParseObject oEvent = new ParseObject("OfflineEventRegistration");
         	oEvent.put("eventName", eventName);
         	oEvent.put("userId", userId);
         	oEvent.put("gaClientId", gaClientId);
@@ -160,7 +165,18 @@ public class ParsePlugin extends CordovaPlugin {
         	oEvent.put("email", email);
         	oEvent.put("phoneNumber", phoneNumber);
         	oEvent.put("registeredAt", getCurrentDateTime());
-        	oEvent.saveEventually();
+        	
+        	// put in local storage to track how many of these
+        	// things are outstanding
+        	oEvent.pinInBackground();
+        	
+        	SaveCallback saveCallback = new SaveCallback() {
+		        public void done(ParseException e) {
+		            oEvent.unpinInBackground();
+		        }
+		    };
+        	oEvent.saveEventually(saveCallback);
+        	
         	callbackContext.success();
             }
 	});
@@ -169,13 +185,14 @@ public class ParsePlugin extends CordovaPlugin {
     private void countOfflineEventDetails(final CallbackContext callbackContext) {
 	cordova.getThreadPool().execute(new Runnable() {
             public void run() {
-//        	ParseQuery<ParseObject> query = ParseQuery.get("OfflineEventRegistration")
-//        		    .fromLocalDatastore()
-//        		    .findInBackground(new FindCallback() {
-//        		        public void done(List<ParseObject> objects, ParseException e) {
-//        		            callbackContext.success(objects.size());
-//        		        }
-//        		    });
+        	FindCallback<ParseObject> findCallback = new FindCallback<ParseObject>() {
+		        public void done(List<ParseObject> objects, ParseException e) {
+		            callbackContext.success(objects.size());
+		        }
+		    };
+        	ParseQuery<ParseObject> query = ParseQuery.getQuery("OfflineEventRegistration")
+        		    .fromLocalDatastore();
+        	query.findInBackground(findCallback);
             }
 	});
     }
