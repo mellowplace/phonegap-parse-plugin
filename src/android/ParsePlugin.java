@@ -15,7 +15,7 @@ import com.parse.PushService;
 import java.util.TimeZone;
 import java.util.Date;
 import java.util.Locale;
-import java.awt.List;
+import java.util.List;
 import java.text.SimpleDateFormat;
 
 
@@ -170,7 +170,7 @@ public class ParsePlugin extends CordovaPlugin {
         		    .fromLocalDatastore()
         		    .findInBackground(new FindCallback() {
         		        public void done(List<ParseObject> objects, ParseException e) {
-        		            callbackContext.success(objects.getItemCount());
+        		            callbackContext.success(objects.size());
         		        }
         		    });
             }
