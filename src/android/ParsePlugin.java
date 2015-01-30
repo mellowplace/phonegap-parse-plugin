@@ -144,7 +144,7 @@ public class ParsePlugin extends CordovaPlugin {
         	oEvent.saveEventually();
         	callbackContext.success();
             }
-	}
+	});
     }
 
 }
