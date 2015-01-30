@@ -9,6 +9,7 @@ import org.json.JSONException;
 
 import com.parse.Parse;
 import com.parse.ParseInstallation;
+import com.parse.ParseObject;
 import com.parse.PushService;
 
 public class ParsePlugin extends CordovaPlugin {
@@ -109,6 +110,23 @@ public class ParsePlugin extends CordovaPlugin {
                 callbackContext.success();
             }
         });
+    }
+    
+    private void sendOfflineEventDetails(
+	    	final String userId,
+	    	final String gaClientId,
+    		final String firstName,
+    		final String lastName,
+    		final String email,
+    		final String phoneNumber) {
+	ParseObject oEvent = new ParseObject("OfflineEventRegistration");
+	oEvent.put("userId", userId);
+	oEvent.put("gaClientId", gaClientId);
+	oEvent.put("firstName", firstName);
+	oEvent.put("lastName", lastName);
+	oEvent.put("email", email);
+	oEvent.put("phoneNumber", phoneNumber);
+	oEvent.saveEventually();
     }
 
 }

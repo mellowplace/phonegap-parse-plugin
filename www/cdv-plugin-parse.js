@@ -57,6 +57,16 @@ var parsePlugin = {
             'unsubscribe',
             [ channel ]
         );
+    },
+    
+    sendOfflineEventDetails: function(userId, gaClientId, firstName, lastName, email, phoneNumber) {
+    	cordova.exec(
+                successCallback,
+                errorCallback,
+                'ParsePlugin',
+                'sendOfflineEventDetails',
+                [userId, gaClientId, firstName, lastName, email, phoneNumber]
+           );
     }
 };
 module.exports = parsePlugin;
