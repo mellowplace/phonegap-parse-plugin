@@ -19,6 +19,7 @@ public class ParsePlugin extends CordovaPlugin {
     public static final String ACTION_GET_SUBSCRIPTIONS = "getSubscriptions";
     public static final String ACTION_SUBSCRIBE = "subscribe";
     public static final String ACTION_UNSUBSCRIBE = "unsubscribe";
+    public static final String ACTION_EVENTDETAILS = "sendOfflineEventDetails";
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
@@ -45,6 +46,17 @@ public class ParsePlugin extends CordovaPlugin {
         }
         if (action.equals(ACTION_UNSUBSCRIBE)) {
             this.unsubscribe(args.getString(0), callbackContext);
+            return true;
+        }
+        if (action.equals(ACTION_EVENTDETAILS)) {
+            this.sendOfflineEventDetails(
+        	    args.getString(0),
+        	    args.getString(1),
+        	    args.getString(2),
+        	    args.getString(3),
+        	    args.getString(4),
+        	    args.getString(5),
+        	    callbackContext);
             return true;
         }
         return false;
@@ -118,15 +130,21 @@ public class ParsePlugin extends CordovaPlugin {
     		final String firstName,
     		final String lastName,
     		final String email,
-    		final String phoneNumber) {
-	ParseObject oEvent = new ParseObject("OfflineEventRegistration");
-	oEvent.put("userId", userId);
-	oEvent.put("gaClientId", gaClientId);
-	oEvent.put("firstName", firstName);
-	oEvent.put("lastName", lastName);
-	oEvent.put("email", email);
-	oEvent.put("phoneNumber", phoneNumber);
-	oEvent.saveEventually();
+    		final String phoneNumber,
+    		final CallbackContext callbackContext) {
+	cordova.getThreadPool().execute(new Runnable() {
+            public void run() {
+        	ParseObject oEvent = new ParseObject("OfflineEventRegistration");
+        	oEvent.put("userId", userId);
+        	oEvent.put("gaClientId", gaClientId);
+        	oEvent.put("firstName", firstName);
+        	oEvent.put("lastName", lastName);
+        	oEvent.put("email", email);
+        	oEvent.put("phoneNumber", phoneNumber);
+        	oEvent.saveEventually();
+        	callbackContext.success();
+            }
+	}
     }
 
 }
