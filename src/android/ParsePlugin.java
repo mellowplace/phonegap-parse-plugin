@@ -13,8 +13,10 @@ import com.parse.ParseObject;
 import com.parse.PushService;
 
 import java.util.TimeZone;
-import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
+import java.text.SimpleDateFormat;
+
 
 public class ParsePlugin extends CordovaPlugin {
     public static final String ACTION_INITIALIZE = "initialize";
