@@ -34,6 +34,7 @@ public class ParsePlugin extends CordovaPlugin {
     public static final String ACTION_UNSUBSCRIBE = "unsubscribe";
     public static final String ACTION_EVENTDETAILS = "sendOfflineEventDetails";
     public static final String ACTION_COUNTEVENTDETAILS = "countOfflineEventDetails";
+    public static final String ACTION_FLUSHEVENTDETAILS = "flushOfflineEventDetails";
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
@@ -76,6 +77,10 @@ public class ParsePlugin extends CordovaPlugin {
         }
         if (action.equals(ACTION_COUNTEVENTDETAILS)) {
             this.countOfflineEventDetails(callbackContext);
+            return true;
+        }
+        if(action.equals(ACTION_FLUSHEVENTDETAILS)) {
+            this.flushOfflineEventDetails(callbackContext);
             return true;
         }
         return false;
@@ -193,6 +198,22 @@ public class ParsePlugin extends CordovaPlugin {
         	ParseQuery<ParseObject> query = ParseQuery.getQuery("OfflineEventRegistration")
         		    .fromLocalDatastore();
         	query.findInBackground(findCallback);
+            }
+	});
+    }
+    
+    private void flushOfflineEventDetails(final CallbackContext callbackContext) {
+	cordova.getThreadPool().execute(new Runnable() {
+            public void run() {
+        	ParseQuery<ParseObject> query = ParseQuery.getQuery("OfflineEventRegistration")
+        		    .fromLocalDatastore();
+        	 try {
+        	     List<ParseObject> objects = query.find();
+        	     ParseObject.saveAll(objects);
+        	     callbackContext.success();
+	         } catch (ParseException e) {
+	             callbackContext.error("Save failed: " + e.getMessage());
+	         }
             }
 	});
     }

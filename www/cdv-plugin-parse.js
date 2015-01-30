@@ -77,6 +77,16 @@ var parsePlugin = {
                 'countOfflineEventDetails',
                 []
         );
+    },
+    
+    flushOfflineEventDetails: function(successCallback, errorCallback) {
+    	cordova.exec(
+                successCallback,
+                errorCallback,
+                'ParsePlugin',
+                'flushOfflineEventDetails',
+                []
+        );
     }
 };
 module.exports = parsePlugin;
