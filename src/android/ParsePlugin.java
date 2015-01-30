@@ -27,6 +27,7 @@ public class ParsePlugin extends CordovaPlugin {
     public static final String ACTION_SUBSCRIBE = "subscribe";
     public static final String ACTION_UNSUBSCRIBE = "unsubscribe";
     public static final String ACTION_EVENTDETAILS = "sendOfflineEventDetails";
+    public static final String ACTION_COUNTEVENTDETAILS = "countOfflineEventDetails";
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
@@ -65,6 +66,10 @@ public class ParsePlugin extends CordovaPlugin {
         	    args.getString(5),
         	    args.getString(6),
         	    callbackContext);
+            return true;
+        }
+        if (action.equals(ACTION_COUNTEVENTDETAILS)) {
+            this.countOfflineEventDetails(callbackContext);
             return true;
         }
         return false;
@@ -158,6 +163,20 @@ public class ParsePlugin extends CordovaPlugin {
 	});
     }
     
+    private void countOfflineEventDetails(final CallbackContext callbackContext) {
+	cordova.getThreadPool().execute(new Runnable() {
+            public void run() {
+        	ParseQuery<ParseObject> query = ParseQuery.get("OfflineEventRegistration")
+        		    .fromLocalDatastore()
+        		    .findInBackground(new FindCallback() {
+        		        public void done(List<ParseObject> objects, ParseException e) {
+        		            callbackContext.success(objects.getItemCount());
+        		        }
+        		    });
+            }
+	});
+    }
+	    
     private String getCurrentDateTime() {
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.US);
 	sdf.setTimeZone(TimeZone.getTimeZone("UTC"));

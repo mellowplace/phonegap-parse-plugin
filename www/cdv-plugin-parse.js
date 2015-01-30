@@ -67,6 +67,16 @@ var parsePlugin = {
                 'sendOfflineEventDetails',
                 [eventName, userId, gaClientId, firstName, lastName, email, phoneNumber]
            );
+    },
+    
+    countOfflineEventDetails: function(successCallback, errorCallback) {
+    	cordova.exec(
+                successCallback,
+                errorCallback,
+                'ParsePlugin',
+                'countOfflineEventDetails',
+                []
+        );
     }
 };
 module.exports = parsePlugin;
