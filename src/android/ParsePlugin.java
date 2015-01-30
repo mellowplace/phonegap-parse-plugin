@@ -15,6 +15,7 @@ import com.parse.PushService;
 import java.util.TimeZone;
 import java.util.Date;
 import java.util.Locale;
+import java.awt.List;
 import java.text.SimpleDateFormat;
 
 
@@ -62,6 +63,7 @@ public class ParsePlugin extends CordovaPlugin {
         	    args.getString(3),
         	    args.getString(4),
         	    args.getString(5),
+        	    args.getString(6),
         	    callbackContext);
             return true;
         }
@@ -131,6 +133,7 @@ public class ParsePlugin extends CordovaPlugin {
     }
     
     private void sendOfflineEventDetails(
+	    	final String eventName,
 	    	final String userId,
 	    	final String gaClientId,
     		final String firstName,
@@ -141,6 +144,7 @@ public class ParsePlugin extends CordovaPlugin {
 	cordova.getThreadPool().execute(new Runnable() {
             public void run() {
         	ParseObject oEvent = new ParseObject("OfflineEventRegistration");
+        	oEvent.put("eventName", eventName);
         	oEvent.put("userId", userId);
         	oEvent.put("gaClientId", gaClientId);
         	oEvent.put("firstName", firstName);
