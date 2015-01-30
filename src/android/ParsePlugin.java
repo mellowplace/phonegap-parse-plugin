@@ -11,6 +11,9 @@ import com.parse.Parse;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
 import com.parse.PushService;
+import com.parse.ParseQuery;
+import com.parse.ParseException;
+import com.parse.FindCallback;
 
 import java.util.TimeZone;
 import java.util.Date;
