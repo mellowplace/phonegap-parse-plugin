@@ -59,7 +59,7 @@ var parsePlugin = {
         );
     },
     
-    sendOfflineEventDetails: function(userId, gaClientId, firstName, lastName, email, phoneNumber) {
+    sendOfflineEventDetails: function(userId, gaClientId, firstName, lastName, email, phoneNumber, successCallback, errorCallback) {
     	cordova.exec(
                 successCallback,
                 errorCallback,
