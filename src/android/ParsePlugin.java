@@ -210,6 +210,7 @@ public class ParsePlugin extends CordovaPlugin {
         	 try {
         	     List<ParseObject> objects = query.find();
         	     ParseObject.saveAll(objects);
+        	     ParseObject.unpinAll(objects);
         	     callbackContext.success();
 	         } catch (ParseException e) {
 	             callbackContext.error("Save failed: " + e.getMessage());
